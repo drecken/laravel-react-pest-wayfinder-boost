@@ -47,8 +47,7 @@ rm -f README.md
 # Create Laravel project with React and Pest
 echo -e "${YELLOW}Creating Laravel project with React and Pest...${NC}"
 docker compose run -T --rm workspace laravel new .laravel-temp --react --pest --npm --no-interaction
-shopt -s dotglob
-cp -r .laravel-temp/* .
+cp -r .laravel-temp/. .
 rm -rf .laravel-temp
 
 echo -e "${YELLOW}Installing Boost...${NC}"
