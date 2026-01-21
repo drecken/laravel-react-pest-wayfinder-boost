@@ -48,7 +48,7 @@ sleep 5
 # Check if workspace container is running
 MAX_ATTEMPTS=30
 ATTEMPT=0
-while ! docker compose ps workspace | grep -q "running"; do
+while ! docker compose ps workspace | grep -q "Up"; do
     ATTEMPT=$((ATTEMPT + 1))
     if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
         echo -e "${RED}Error: Workspace container failed to start${NC}"
