@@ -56,51 +56,8 @@ rm -rf scripts
 # Remove install.sh
 rm -f install.sh
 
-# Create fresh README.md for the new project
-cat > README.md << 'EOF'
-# My Laravel Project
-
-A Laravel application with React, Pest testing, Wayfinder, and Boost.
-
-## Getting Started
-
-Start the Docker containers:
-
-```bash
-docker compose up -d
-```
-
-## Available Services
-
-- **App**: http://localhost
-- **Vite dev server**: http://localhost:5174
-
-## Commands
-
-Access the workspace container:
-
-```bash
-docker compose exec -ti workspace bash
-```
-
-Run Artisan commands:
-
-```bash
-docker compose exec -ti workspace php artisan <command>
-```
-
-Run tests:
-
-```bash
-docker compose exec -ti workspace php artisan test
-```
-
-Start Vite development server:
-
-```bash
-docker compose exec -ti node npm run dev
-```
-EOF
+# Remove README.md
+rm -f README.md
 
 # Initialize fresh git repository
 echo -e "${YELLOW}Initializing fresh git repository...${NC}"
