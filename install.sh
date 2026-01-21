@@ -21,6 +21,10 @@ fi
 
 PROJECT_DIR="$1"
 
+# Create log file for verbose output
+LOG_FILE="/tmp/$(date +%Y-%m-%d)-${PROJECT_DIR}.log"
+trap 'echo -e "${RED}Installation failed. Check log: $LOG_FILE${NC}"' ERR
+
 # Check if directory already exists
 if [ -d "$PROJECT_DIR" ]; then
     echo -e "${RED}Error: Directory '$PROJECT_DIR' already exists${NC}"
@@ -32,43 +36,43 @@ echo ""
 
 # Clone the repository
 echo -e "${YELLOW}Cloning repository into '$PROJECT_DIR'...${NC}"
-git clone git@github.com:drecken/laravel-react-pest-wayfinder-boost.git "$PROJECT_DIR"
+git clone git@github.com:drecken/laravel-react-pest-wayfinder-boost.git "$PROJECT_DIR" >> "$LOG_FILE" 2>&1
 
 # Change into the project directory
 cd "$PROJECT_DIR"
 
 # Build containers
 echo -e "${YELLOW}Building Docker containers...${NC}"
-docker compose build
+docker compose build >> "$LOG_FILE" 2>&1
 
 # Remove boilerplate README (Laravel will provide its own)
 rm -f README.md
 
 # Create Laravel project with React and Pest
 echo -e "${YELLOW}Creating Laravel project with React and Pest...${NC}"
-docker compose run -T --rm workspace laravel new .laravel-temp --react --pest --npm --no-interaction
+docker compose run -T --rm workspace laravel new .laravel-temp --react --pest --npm --no-interaction < /dev/null >> "$LOG_FILE" 2>&1
 
 echo -e "${YELLOW}Copying Laravel files to project root...${NC}"
-cp -r .laravel-temp/. .
-rm -rf .laravel-temp
+cp -r .laravel-temp/. . >> "$LOG_FILE" 2>&1
+rm -rf .laravel-temp >> "$LOG_FILE" 2>&1
 
 echo -e "${YELLOW}Installing Boost...${NC}"
-docker compose run -T --rm workspace composer require laravel/boost --dev
+docker compose run -T --rm workspace composer require laravel/boost --dev < /dev/null >> "$LOG_FILE" 2>&1
 
 # Clean up boilerplate files
 echo -e "${YELLOW}Cleaning up boilerplate files...${NC}"
 
 # Remove .git directory (boilerplate history)
-rm -rf .git
+rm -rf .git >> "$LOG_FILE" 2>&1
 
 # Remove install.sh
 rm -f install.sh
 
 # Initialize fresh git repository
 echo -e "${YELLOW}Initializing fresh git repository...${NC}"
-git init
-git add .
-git commit -m "Initial commit"
+git init >> "$LOG_FILE" 2>&1
+git add . >> "$LOG_FILE" 2>&1
+git commit -m "Initial commit" >> "$LOG_FILE" 2>&1
 
 echo ""
 echo -e "${GREEN}============================================${NC}"
@@ -76,6 +80,7 @@ echo -e "${GREEN}Installation complete!${NC}"
 echo -e "${GREEN}============================================${NC}"
 echo ""
 echo "Your project is ready at: $PROJECT_DIR"
+echo "  Installation log: $LOG_FILE"
 echo ""
 echo "Next steps:"
 echo "  1. cd $PROJECT_DIR"
