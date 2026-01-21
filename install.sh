@@ -41,9 +41,15 @@ cd "$PROJECT_DIR"
 echo -e "${YELLOW}Building Docker containers...${NC}"
 docker compose build
 
+# Remove boilerplate README (Laravel will provide its own)
+rm -f README.md
+
 # Create Laravel project with React and Pest
 echo -e "${YELLOW}Creating Laravel project with React and Pest...${NC}"
-docker compose run -T --rm workspace ./scripts/create-laravel-project.sh
+docker compose run -T --rm workspace laravel new .laravel-temp --react --pest --npm --no-interaction
+shopt -s dotglob
+cp -r .laravel-temp/* .
+rm -rf .laravel-temp
 
 echo -e "${YELLOW}Installing Boost...${NC}"
 docker compose run -T --rm workspace composer require laravel/boost --dev
@@ -54,14 +60,8 @@ echo -e "${YELLOW}Cleaning up boilerplate files...${NC}"
 # Remove .git directory (boilerplate history)
 rm -rf .git
 
-# Remove scripts directory
-rm -rf scripts
-
 # Remove install.sh
 rm -f install.sh
-
-# Remove README.md
-rm -f README.md
 
 # Initialize fresh git repository
 echo -e "${YELLOW}Initializing fresh git repository...${NC}"
