@@ -37,32 +37,12 @@ git clone git@github.com:drecken/laravel-react-pest-wayfinder-boost.git "$PROJEC
 # Change into the project directory
 cd "$PROJECT_DIR"
 
-# Start Docker containers
-echo -e "${YELLOW}Starting Docker containers...${NC}"
-docker compose up -d
-
-# Wait for containers to be ready
-echo -e "${YELLOW}Waiting for containers to be ready...${NC}"
-sleep 5
-
-# Check if workspace container is running
-MAX_ATTEMPTS=30
-ATTEMPT=0
-while ! docker compose ps workspace | grep -q "Up"; do
-    ATTEMPT=$((ATTEMPT + 1))
-    if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
-        echo -e "${RED}Error: Workspace container failed to start${NC}"
-        exit 1
-    fi
-    echo "Waiting for workspace container... (attempt $ATTEMPT/$MAX_ATTEMPTS)"
-    sleep 2
-done
-
+# Create Laravel project with React and Pest
 echo -e "${YELLOW}Creating Laravel project with React and Pest...${NC}"
-docker compose exec -T workspace ./scripts/create-laravel-project.sh
+docker compose run --rm workspace ./scripts/create-laravel-project.sh
 
 echo -e "${YELLOW}Installing Boost...${NC}"
-docker compose exec -T workspace composer require laravel/boost --dev
+docker compose run --rm workspace composer require laravel/boost --dev
 
 # Clean up boilerplate files
 echo -e "${YELLOW}Cleaning up boilerplate files...${NC}"
