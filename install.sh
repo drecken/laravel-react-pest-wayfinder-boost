@@ -37,12 +37,16 @@ git clone git@github.com:drecken/laravel-react-pest-wayfinder-boost.git "$PROJEC
 # Change into the project directory
 cd "$PROJECT_DIR"
 
+# Build containers
+echo -e "${YELLOW}Building Docker containers...${NC}"
+docker compose build
+
 # Create Laravel project with React and Pest
 echo -e "${YELLOW}Creating Laravel project with React and Pest...${NC}"
-docker compose run --rm workspace ./scripts/create-laravel-project.sh
+docker compose run -T --rm workspace ./scripts/create-laravel-project.sh
 
 echo -e "${YELLOW}Installing Boost...${NC}"
-docker compose run --rm workspace composer require laravel/boost --dev
+docker compose run -T --rm workspace composer require laravel/boost --dev
 
 # Clean up boilerplate files
 echo -e "${YELLOW}Cleaning up boilerplate files...${NC}"
