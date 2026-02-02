@@ -59,6 +59,9 @@ rm -rf .laravel-temp >> "$LOG_FILE" 2>&1
 echo -e "${YELLOW}Installing Boost...${NC}"
 docker compose run -T --rm workspace composer require laravel/boost --dev < /dev/null >> "$LOG_FILE" 2>&1
 
+echo -e "${YELLOW}Starting Docker containers...${NC}"
+docker compose up -d >> "$LOG_FILE" 2>&1
+
 # Clean up boilerplate files
 echo -e "${YELLOW}Cleaning up boilerplate files...${NC}"
 
@@ -85,7 +88,7 @@ echo ""
 echo "Next steps:"
 echo "  1. cd $PROJECT_DIR"
 echo "  2. Run Boost installer:"
-echo "     docker compose exec -ti workspace php artisan boost:install"
+echo "     docker compose run --rm workspace php artisan boost:install --guidelines --skills --mcp"
 echo ""
 echo "Available services:"
 echo "  - App: http://localhost"
