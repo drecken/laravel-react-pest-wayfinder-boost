@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "boost": {
+      "command": "docker",
+      "args": ["compose", "exec", "-T", "workspace", "php", "artisan", "boost:mcp"]
+    }
+  }
+}

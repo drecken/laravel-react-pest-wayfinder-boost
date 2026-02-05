@@ -11,6 +11,15 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Cross-platform sed helper (macOS uses sed -i '', Linux uses sed -i)
+sed_inplace() {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "$@"
+    else
+        sed -i "$@"
+    fi
+}
+
 # Check if directory name is provided
 if [ -z "$1" ]; then
     echo -e "${RED}Error: Please provide a directory name${NC}"
@@ -56,12 +65,24 @@ echo -e "${YELLOW}Copying Laravel files to project root...${NC}"
 cp -r .laravel-temp/. . >> "$LOG_FILE" 2>&1
 rm -rf .laravel-temp >> "$LOG_FILE" 2>&1
 
-echo -e "${YELLOW}Configuring app name for Docker...${NC}"
-sed -i '' "s/^APP_NAME=.*/APP_NAME=$PROJECT_DIR/" .env
+# Copy custom vite.config.ts with HMR settings
+echo -e "${YELLOW}Configuring Vite for Docker HMR...${NC}"
+cp templates/vite.config.ts vite.config.ts >> "$LOG_FILE" 2>&1
+
+echo -e "${YELLOW}Configuring app name and URL for Docker...${NC}"
+sed_inplace "s/^APP_NAME=.*/APP_NAME=$PROJECT_DIR/" .env
+sed_inplace "s|^APP_URL=.*|APP_URL=http://${PROJECT_DIR}.localhost|" .env
 
 echo -e "${YELLOW}Installing Boost...${NC}"
 docker compose run -T --rm workspace composer require laravel/boost --dev --no-scripts < /dev/null >> "$LOG_FILE" 2>&1
 docker compose run -T --rm workspace composer run-script post-autoload-dump < /dev/null >> "$LOG_FILE" 2>&1
+
+echo -e "${YELLOW}Running Boost installer...${NC}"
+docker compose run -T --rm workspace php artisan boost:install --guidelines --skills --mcp --no-interaction < /dev/null >> "$LOG_FILE" 2>&1
+
+# Overwrite .mcp.json with Docker exec configuration
+echo -e "${YELLOW}Configuring MCP for Docker...${NC}"
+cp templates/.mcp.json .mcp.json >> "$LOG_FILE" 2>&1
 
 echo -e "${YELLOW}Starting Docker containers...${NC}"
 docker compose up -d >> "$LOG_FILE" 2>&1
@@ -74,6 +95,9 @@ rm -rf .git >> "$LOG_FILE" 2>&1
 
 # Remove install.sh
 rm -f install.sh
+
+# Remove boilerplate-specific directories
+rm -rf templates .ai >> "$LOG_FILE" 2>&1
 
 # Initialize fresh git repository
 echo -e "${YELLOW}Initializing fresh git repository...${NC}"
@@ -89,12 +113,6 @@ echo ""
 echo "Your project is ready at: $PROJECT_DIR"
 echo "  Installation log: $LOG_FILE"
 echo ""
-echo "Next steps:"
-echo "  1. cd $PROJECT_DIR"
-echo "  2. Run Boost installer:"
-echo "     docker compose run --rm workspace php artisan boost:install --guidelines --skills --mcp"
-echo ""
 echo "Available services:"
 echo "  - App: http://$PROJECT_DIR.localhost"
-echo "  - Vite dev server: http://localhost:5174"
 echo ""
