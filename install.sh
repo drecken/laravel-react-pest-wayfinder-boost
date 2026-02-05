@@ -60,7 +60,8 @@ echo -e "${YELLOW}Configuring app name for Docker...${NC}"
 sed -i '' "s/^APP_NAME=.*/APP_NAME=$PROJECT_DIR/" .env
 
 echo -e "${YELLOW}Installing Boost...${NC}"
-docker compose run -T --rm workspace composer require laravel/boost --dev < /dev/null >> "$LOG_FILE" 2>&1
+docker compose run -T --rm workspace composer require laravel/boost --dev --no-scripts < /dev/null >> "$LOG_FILE" 2>&1
+docker compose run -T --rm workspace composer run-script post-autoload-dump < /dev/null >> "$LOG_FILE" 2>&1
 
 echo -e "${YELLOW}Starting Docker containers...${NC}"
 docker compose up -d >> "$LOG_FILE" 2>&1
