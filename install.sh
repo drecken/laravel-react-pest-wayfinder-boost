@@ -56,6 +56,9 @@ echo -e "${YELLOW}Copying Laravel files to project root...${NC}"
 cp -r .laravel-temp/. . >> "$LOG_FILE" 2>&1
 rm -rf .laravel-temp >> "$LOG_FILE" 2>&1
 
+echo -e "${YELLOW}Configuring app name for Docker...${NC}"
+sed -i '' "s/^APP_NAME=.*/APP_NAME=$PROJECT_DIR/" .env
+
 echo -e "${YELLOW}Installing Boost...${NC}"
 docker compose run -T --rm workspace composer require laravel/boost --dev < /dev/null >> "$LOG_FILE" 2>&1
 
@@ -91,6 +94,6 @@ echo "  2. Run Boost installer:"
 echo "     docker compose run --rm workspace php artisan boost:install --guidelines --skills --mcp"
 echo ""
 echo "Available services:"
-echo "  - App: http://localhost"
+echo "  - App: http://$PROJECT_DIR.localhost"
 echo "  - Vite dev server: http://localhost:5174"
 echo ""
