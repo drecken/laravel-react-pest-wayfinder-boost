@@ -41,6 +41,7 @@ if [ -d "$PROJECT_DIR" ]; then
 fi
 
 echo -e "${GREEN}Installing Laravel + React + Pest + Wayfinder + Boost stack...${NC}"
+echo "Log file: $LOG_FILE"
 echo ""
 
 # Clone the repository
@@ -77,10 +78,7 @@ echo -e "${YELLOW}Installing Boost...${NC}"
 docker compose run -T --rm workspace composer require laravel/boost --dev --no-scripts < /dev/null >> "$LOG_FILE" 2>&1
 docker compose run -T --rm workspace composer run-script post-autoload-dump < /dev/null >> "$LOG_FILE" 2>&1
 
-echo -e "${YELLOW}Running Boost installer...${NC}"
-docker compose run -T --rm workspace php artisan boost:install --guidelines --skills --mcp --no-interaction < /dev/null >> "$LOG_FILE" 2>&1
-
-# Overwrite .mcp.json with Docker exec configuration
+# Copy MCP configuration for Docker
 echo -e "${YELLOW}Configuring MCP for Docker...${NC}"
 cp templates/.mcp.json .mcp.json >> "$LOG_FILE" 2>&1
 
@@ -112,6 +110,10 @@ echo -e "${GREEN}============================================${NC}"
 echo ""
 echo "Your project is ready at: $PROJECT_DIR"
 echo "  Installation log: $LOG_FILE"
+echo ""
+echo "Next steps:"
+echo "  cd $PROJECT_DIR"
+echo "  docker compose exec workspace php artisan boost:install --guidelines --skills"
 echo ""
 echo "Available services:"
 echo "  - App: http://$PROJECT_DIR.localhost"
