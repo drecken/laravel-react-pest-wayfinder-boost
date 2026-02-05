@@ -26,7 +26,7 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY start-vite.sh /usr/local/bin/start-vite.sh
 RUN chmod +x /usr/local/bin/start-vite.sh
 
-WORKDIR /workspace
+WORKDIR /app
 
 EXPOSE 9000 5173
 
