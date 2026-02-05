@@ -1,11 +1,11 @@
-FROM php:8.3-cli
+FROM php:8.3-fpm
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     zip \
     curl \
+    supervisor \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Node.js and npm (latest LTS)
@@ -19,11 +19,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Install Laravel installer globally
 RUN composer global require laravel/installer
 
-# Add Composer global bin to PATH
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
-# Set working directory
+# Copy supervisor and startup configs
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY start-vite.sh /usr/local/bin/start-vite.sh
+RUN chmod +x /usr/local/bin/start-vite.sh
+
 WORKDIR /workspace
 
-# Keep container running
-CMD ["tail", "-f", "/dev/null"]
+EXPOSE 9000 5173
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
