@@ -12,10 +12,12 @@ export default defineConfig(({ mode }) => {
             host: '0.0.0.0',
             port: 5173,
             strictPort: true,
+            allowedHosts: ['workspace', appUrl.hostname],
             hmr: {
                 host: appUrl.hostname,
                 protocol: appUrl.protocol === 'https:' ? 'wss' : 'ws',
                 clientPort: appUrl.port ? parseInt(appUrl.port) : (appUrl.protocol === 'https:' ? 443 : 80),
+                path: '/__vite_hmr',
             },
         },
         plugins: [
