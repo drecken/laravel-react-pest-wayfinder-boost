@@ -72,6 +72,7 @@ cp templates/vite.config.ts vite.config.ts >> "$LOG_FILE" 2>&1
 
 echo -e "${YELLOW}Configuring app name and URL for Docker...${NC}"
 sed_inplace "s/^APP_NAME=.*/APP_NAME=$PROJECT_DIR/" .env
+echo "APP_SLUG=$PROJECT_DIR" >> .env
 sed_inplace "s|^APP_URL=.*|APP_URL=http://${PROJECT_DIR}.localhost|" .env
 
 echo -e "${YELLOW}Installing Boost...${NC}"
@@ -116,5 +117,5 @@ echo "  cd $PROJECT_DIR"
 echo "  docker compose exec workspace php artisan boost:install --guidelines --skills"
 echo ""
 echo "Available services:"
-echo "  - App: http://$PROJECT_DIR.localhost"
+echo "  - App: http://${PROJECT_DIR}.localhost"
 echo ""

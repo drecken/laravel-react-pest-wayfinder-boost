@@ -24,10 +24,11 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 # Copy supervisor and startup configs
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY start-vite.sh /usr/local/bin/start-vite.sh
-RUN chmod +x /usr/local/bin/start-vite.sh
+COPY start-ssr.sh /usr/local/bin/start-ssr.sh
+RUN chmod +x /usr/local/bin/start-vite.sh /usr/local/bin/start-ssr.sh
 
 WORKDIR /app
 
-EXPOSE 9000 5173
+EXPOSE 9000 5173 13714
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
