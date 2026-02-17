@@ -96,7 +96,7 @@ rm -rf .git >> "$LOG_FILE" 2>&1
 rm -f install.sh
 
 # Remove boilerplate-specific directories
-rm -rf templates .ai >> "$LOG_FILE" 2>&1
+rm -rf templates >> "$LOG_FILE" 2>&1
 
 # Initialize fresh git repository
 echo -e "${YELLOW}Initializing fresh git repository...${NC}"
