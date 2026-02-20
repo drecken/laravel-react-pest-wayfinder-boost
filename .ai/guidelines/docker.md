@@ -1,17 +1,29 @@
 # Docker Development Environment
 
-PHP and Node.js are not installed locally. This project does not use Laravel Sail. All PHP and npm commands must be run inside the `workspace` Docker container.
+PHP and Node.js are not installed locally. This project does not use Laravel Sail.
+All commands must be run inside the `workspace` Docker container.
+
+## Helper Scripts
+
+Use the scripts in the `scripts/` directory:
 
 ```bash
-# Example: install a Composer package
-docker compose exec workspace composer require some/package
+scripts/artisan migrate          # Run artisan commands
+scripts/test                     # Run tests
+scripts/test --filter=MyTest     # Run specific tests
+scripts/npm install              # Install npm packages
+scripts/composer require foo/bar # Install composer packages
+scripts/php script.php           # Run PHP scripts
+scripts/tinker                   # Open Laravel tinker
+scripts/log                      # Tail Laravel log
+scripts/exec <any-command>       # Run any command in workspace
+```
 
-# Example: run npm
-docker compose exec workspace npm install
+## Direct Docker Commands
 
-# Example: run Artisan
+The scripts are wrappers around `docker compose exec workspace`:
+
+```bash
 docker compose exec workspace php artisan migrate
-
-# Example: run tests
-docker compose exec workspace php artisan test
+docker compose exec workspace npm install
 ```

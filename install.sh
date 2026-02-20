@@ -83,6 +83,11 @@ docker compose run -T --rm workspace composer run-script post-autoload-dump < /d
 echo -e "${YELLOW}Configuring MCP for Docker...${NC}"
 cp templates/.mcp.json .mcp.json >> "$LOG_FILE" 2>&1
 
+echo -e "${YELLOW}Configuring Claude Code project settings...${NC}"
+rm -rf .claude >> "$LOG_FILE" 2>&1
+mkdir -p .claude >> "$LOG_FILE" 2>&1
+cp templates/claude-settings.json .claude/settings.json >> "$LOG_FILE" 2>&1
+
 echo -e "${YELLOW}Starting Docker containers...${NC}"
 docker compose up -d >> "$LOG_FILE" 2>&1
 
@@ -115,6 +120,13 @@ echo ""
 echo "Next steps:"
 echo "  cd $PROJECT_DIR"
 echo "  docker compose exec workspace php artisan boost:install --guidelines --skills"
+echo ""
+echo "Helper scripts available in scripts/:"
+echo "  scripts/artisan migrate      Run artisan commands"
+echo "  scripts/test                 Run tests"
+echo "  scripts/npm install          Run npm commands"
+echo "  scripts/tinker               Open Laravel tinker"
+echo "  scripts/log                  Tail Laravel log"
 echo ""
 echo "Available services:"
 echo "  - App: http://${PROJECT_DIR}.localhost"

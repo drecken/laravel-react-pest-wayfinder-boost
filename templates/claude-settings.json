@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__boost__*",
+      "Bash(docker compose *)",
+      "Bash(./scripts/*)",
+      "Bash(scripts/*)",
+      "WebSearch"
+    ]
+  }
+}
